@@ -1,0 +1,147 @@
+<%- include('header.ejs') %>
+<style>
+  .dataTables_length select {
+    padding: 0.3rem 0.5rem;
+    margin-left: 0.5rem;
+    width: auto;
+  }
+
+  #coursesTable_wrapper .row {
+    margin-bottom: 1rem;
+  }
+
+  .table-responsive {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .badge {
+    font-size: 0.9rem;
+    padding: 0.5em 0.7em;
+  }
+</style>
+
+<body>
+  <div class="container-scroller">
+    <%- include('admin/adminNavbar.ejs') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('admin/adminSidebar.ejs') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="container py-4">
+            <h3 class="mb-4">Courses List</h3>
+            <div class="table-responsive">
+              <table
+                id="coursesTable"
+                class="table table-striped table-bordered"
+              >
+                <thead class="table-dark">
+                  <tr>
+                    <th>Thumbnail</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    
+                    <th>Status</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>Lessons</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      var table = $("#coursesTable").DataTable({
+        paging: true,
+        lengthChange: true,
+        searching: true,
+        ordering: true,
+        info: true,
+        autoWidth: false,
+        responsive: true,
+        language: {
+          emptyTable: "No courses available",
+          lengthMenu: "Show _MENU_ entries",
+        },
+      });
+      $.ajax({
+        url: "/api/admin/courses",
+        method: "GET",
+        success: function (response) {
+          if (response.status === 200) {
+            table.clear();
+            response.courses.forEach((course) => {
+              table.row.add([
+  `<img src="http://127.0.0.1:7000/${course.thumbnail}" alt="${course.title}" class="hei rounded-circle">`,
+  `<strong>${course.title}</strong>`,
+  `<span>$${course.price.toFixed(2)}</span>`,
+  course.categoryName,
+  `
+  <div class="dropdown">
+    <a
+      class="btn btn-sm dropdown-toggle 
+        ${course.status === "pending" ? "btn-warning" : course.status === "published" ? "btn-success" : "btn-danger"}"
+      href="#"
+      role="button"
+      id="dropdownMenuLink${course._id}"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      ${course.status}
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink${course._id}">
+      <li>
+        <a
+          class="dropdown-item"
+          href="/admin/course/${course._id}/active"
+         
+        >
+          Published
+        </a>
+      </li>
+      <li>
+        <a
+          class="dropdown-item"
+          href="/admin/course/${course._id}/deactive"
+        >
+          Rejected
+        </a>
+      </li>
+     
+    </ul>
+  </div>
+  `,
+  `<a href="/admin/course/update/${course._id}" class="text-decoration-none fs-6"><span class="mdi mdi-book-edit-outline text-lg"></span></a>`,
+  `<a href="/admin/course/delete/${course._id}" class="mdi mdi-delete fs-6 text-danger"></a>`,
+  `<a href="/admin/course/${course._id}/lessons"><button class="btn btn-primary btn-sm">View Lessons</button></a>`,
+]);
+
+            });
+            table.draw();
+          } else {
+            console.error("Failed to fetch courses:", response.message);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("Error fetching data:", error);
+        },
+      });
+    });
+  </script>
+
+  <%- include('footer.ejs') %>
+</body>

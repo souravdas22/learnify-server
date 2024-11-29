@@ -1,0 +1,198 @@
+<%- include('header.ejs') %>
+<body>
+  <div class="container-scroller">
+    <%- include('instructor/instructorNavbar.ejs') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('instructor/instructorSidebar.ejs') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <h2>Manage Videos</h2>
+          <div class="mb-3">
+            <button
+              class="btn btn-success"
+              data-bs-toggle="modal"
+              data-bs-target="#createModal"
+            >
+              Add New Video
+            </button>
+          </div>
+          <div class="row">
+            <% if (videos && videos.length > 0) { %> <% videos.forEach(video =>
+            { %>
+            <div class="col-md-4 mb-4">
+              <div class="card" style="width: 100%">
+                <video class="card-img-top" controls>
+                  <source
+                    src="http://127.0.0.1:7000/<%= video.url %>"
+                    type="video/mp4"
+                  />
+                  Your browser does not support the video tag.
+                </video>
+                <div class="card-body">
+                  <h5 class="card-title"><%= video.title %></h5>
+                  <p class="card-text">
+                    Duration: <%= video.duration %> minutes
+                  </p>
+                  <div class="row">
+                    <div class="col">
+                      <button
+                        class="btn btn-warning"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editModal<%= video._id %>"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                    <div class="col">
+                      <button type="submit" class="btn btn-danger">
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Edit Modal -->
+            <div
+              class="modal fade"
+              id="editModal<%= video._id %>"
+              tabindex="-1"
+              aria-labelledby="editModalLabel<%= video._id %>"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel<%= video._id %>">
+                      Edit Video
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <form
+                    action="/instructor/video/<%= video._id %>/edit"
+                    method="POST"
+                  >
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="title"
+                          value="<%= video.title %>"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="duration" class="form-label"
+                          >Duration (minutes)</label
+                        >
+                        <input
+                          type="number"
+                          class="form-control"
+                          name="duration"
+                          value="<%= video.duration %>"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="videoFile" class="form-label"
+                          >Upload Video</label
+                        >
+                        <input
+                          type="file"
+                          class="form-control"
+                          name="videoFile"
+                          accept="video/mp4"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                      <button type="submit" class="btn btn-primary">
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <% }); %> <% } else { %>
+            <p>No videos available for this course.</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Modal -->
+  <div
+    class="modal fade"
+    id="createModal"
+    tabindex="-1"
+    aria-labelledby="createModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createModalLabel">Add New Video</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <form
+          action="/instructor/course/<%= lessonId %>/video/create"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="title" class="form-label">Title</label>
+              <input type="text" class="form-control" name="title" />
+            </div>
+            <div class="mb-3">
+              <label for="duration" class="form-label"
+                >Duration (minutes)</label
+              >
+              <input type="number" class="form-control" name="duration" />
+            </div>
+            <div class="mb-3">
+              <label for="url" class="form-label">Upload Video</label>
+              <input type="file" class="form-control" name="url" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary">Add Video</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>

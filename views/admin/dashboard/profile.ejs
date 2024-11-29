@@ -1,0 +1,70 @@
+<%- include('header.ejs') %>
+
+<body>
+  <div class="container-scroller">
+    <%- include('admin/adminNavbar.ejs') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('admin/adminSidebar.ejs') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="container my-5">
+            <h2 class="mb-4">My Profile</h2>
+            <div class="card p-4">
+              <div class="row mb-3">
+                <div class="col-sm-3"><strong>Registration Date</strong></div>
+ <div class="col-sm-9 profile-registration-date">
+                  <%= new Date(user.dateJoined).toLocaleDateString("en-US", {
+                  year: "numeric", month: "long", day: "numeric", }) %>
+                </div>              </div>
+              <div class="row mb-3">
+                <div class="col-sm-3"><strong>First Name</strong></div>
+                <div class="col-sm-9 profile-first-name"><%= user.first_name %></div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-sm-3"><strong>Last Name</strong></div>
+                <div class="col-sm-9 profile-last-name"><%= user.last_name %></div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-sm-3"><strong>Username</strong></div>
+                <div class="col-sm-9 profile-username"><%= user.username %></div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-sm-3"><strong>Email</strong></div>
+                <div class="col-sm-9 profile-email"><%= user.email %></div>
+              </div>
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+
+   
+     $.ajax({
+          url: "http://127.0.0.1:7000/user/<%= id %>",
+          type: "GET",
+          success: function (response) {
+            console.log(response);
+            const data = response.data;
+            const registrationDate = new Date(data.createdAt).toLocaleString();
+            $(".profile-registration-date").text(registrationDate);
+            $(".profile-first-name").text(data.first_name);
+            $(".profile-last-name").text(data.last_name);
+            $(".profile-username").text(data.username);
+            $(".profile-email").text(data.email);
+            $(".profile-bio").text(data.biography);
+          },
+          error: function (error) {
+            console.log("Error fetching profile data:", error);
+          },
+        });
+    });
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>

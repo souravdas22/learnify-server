@@ -1,0 +1,81 @@
+<%- include('header.ejs') %>
+<style>
+  .review-table-container {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+  .profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .rating-badge {
+    font-size: 0.9rem;
+    padding: 0.3em 0.6em;
+    border-radius: 4px;
+  }
+</style>
+
+<body>
+  <div class="container-scroller">
+    <%- include('instructor/instructorNavbar.ejs') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('instructor/instructorSidebar.ejs') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="container py-4">
+            <h3 class="mb-4">Instructor Reviews</h3>
+
+            <div class="review-table-container">
+              <table class="table table-bordered">
+                <thead class="table-dark">
+                  <tr>
+                    <th>Profile</th>
+                    <th>User Email</th>
+                    <th>Course</th>
+                    <th>Comment</th>
+                    <th>Rating</th>
+                    <th>Review Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (reviews && reviews.reviews && reviews.reviews.length > 0) { %>
+                    <% reviews.reviews.forEach(function(review) { %>
+                      <tr>
+                        <!-- Profile Image -->
+                        <td>
+                          <img src="http://127.0.0.1:7000/<%= review.userProfile %>" alt="User Profile" class="profile-img">
+                        </td>
+                        <!-- User Email -->
+                        <td><%= review.userEmail %></td>
+                        <!-- Comment -->
+                        <td><%= review.course %></td>
+                        <td><%= review.review.comment %></td>
+                        <!-- Rating with badge color based on rating value -->
+                        <td>
+                          <span class="badge rating-badge <%= review.review.rating >= 4 ? 'bg-success' : 'bg-warning' %>">
+                            <%= review.review.rating %>/5
+                          </span>
+                        </td>
+                        <!-- Review Date -->
+                        <td><%= new Date(review.review.createdAt).toLocaleDateString("en-US") %></td>
+                      </tr>
+                    <% }) %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="5" class="text-center">No reviews available for this instructor.</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+</body>

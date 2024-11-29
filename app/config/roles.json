@@ -1,0 +1,40 @@
+{
+  "roles": {
+    "admin": {
+      "description": "Admin has full access to manage users, courses, and platform settings",
+      "permissions": [
+        "manageUsers",
+        "manageCourses",
+        "manageQuizzes",
+        "viewReports",
+        "managePayments",
+        "assignRoles",
+        "manageCertificates"
+      ]
+    },
+    "instructor": {
+      "description": "Instructor can create and manage their own courses and quizzes, view enrolled students",
+      "permissions": [
+        "createCourses",
+        "editCourses",
+        "deleteCourses",
+        "manageOwnQuizzes",
+        "viewOwnStudents",
+        "issueCertificates",
+        "viewEarnings", 
+        "manageCourseContent"
+      ]
+    },
+    "student": {
+      "description": "Student can view and enroll in courses, participate in quizzes, and track progress",
+      "permissions": [
+        "enrollCourses",
+        "viewCourseContent",
+        "takeQuizzes",
+        "viewProgress",
+        "earnCertificates",
+        "messageInstructor"
+      ]
+    }
+  }
+}

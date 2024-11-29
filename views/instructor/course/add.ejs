@@ -1,0 +1,114 @@
+<%- include('header.ejs') %>
+<body>
+  <div class="container-scroller">
+    <%- include('instructor/instructorNavbar.ejs') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('instructor/instructorSidebar.ejs') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="container mt-3 col-8 p-3 bg-white">
+            <h2 class="text-center my-2">Create Course</h2>
+
+            <!-- Course Creation Form -->
+            <div class="mb-5">
+              <form
+                id="courseForm"
+                action="/instructor/course/create"
+                method="POST"
+                enctype="multipart/form-data"
+              >
+                <div class="mb-3">
+                  <label for="title" class="form-label">Course Title</label>
+                  <input type="text" class="form-control" id="title" name="title" required />
+                </div>
+                <div class="mb-3">
+                  <label for="description" class="form-label">Description</label>
+                  <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                </div>
+                <div class="row">
+                  <div class="mb-3 col-6">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="number" class="form-control" id="price" name="price" required />
+                  </div>
+                  <div class="mb-3 col-6">
+                    <label for="courseType" class="form-label">Course Type</label>
+                    <select class="form-select" id="courseType" name="courseType" required>
+                      <option value="free">Free</option>
+                      <option value="paid">Paid</option>
+                      <option value="premium">Premium</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="thumbnail" class="form-label">Thumbnail</label>
+                  <input type="file" class="form-control" id="thumbnail" name="thumbnail" />
+                </div>
+               <div class="row">
+                  <div class="mb-3 col-6">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" id="category" name="category" required>
+                      <option value="">Select a category</option>
+                    </select>
+                  </div>
+                
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Course</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).ready(function () {
+
+  $.ajax({
+        url: '/api/admin/categories',
+        method: 'GET',
+        success: function (response) {
+          const categories = response.data; // Assuming the API returns categories in `data`
+          const categorySelect = $('#category');
+
+          categories.forEach((category) => {
+            const option = `<option value="${category._id}">${category.name}</option>`;
+            categorySelect.append(option);
+          });
+        },
+        error: function (err) {
+          console.error('Error fetching categories:', err);
+          alert('Unable to load categories. Please try again.');
+        },
+      });
+
+
+
+      $('#courseForm').on('submit', function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        const formData = new FormData(this);
+
+        $.ajax({
+          url: '/instructor/course/create',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (response) {
+            const courseId = response.data._id;
+            window.location.href = `/instructor/course/${courseId}/lesson/create`;
+          },
+          error: function (err) {
+            alert('Error creating course. Please try again.');
+            console.error(err);
+          },
+        });
+      });
+    });
+  </script>
+</body>

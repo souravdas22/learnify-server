@@ -1,0 +1,84 @@
+<%- include('header.ejs') %>
+
+<body>
+  <div class="container-scroller">
+    <%- include('instructor/instructorNavbar.ejs') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('instructor/instructorSidebar.ejs') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="container mt-5">
+            <h3>My Quiz Attempts</h3>
+            <table id="quizTable" class="table table-striped table-bordered">
+              <thead class="table-light">
+                <tr>
+                  <th>Quiz</th>
+                  <th>Qus</th>
+                  <th>TM</th>
+                  <th>CA</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Data will be loaded dynamically with AJAX -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      $("#quizTable").DataTable({
+        ajax: {
+          url: "/api/quizzes",
+          dataSrc: "quizzes",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row) {
+              return `
+                                <small class="text-muted">${new Date(
+                                  data.createdAt
+                                ).toLocaleDateString()}</small><br>
+                                <strong>${data.description}</strong><br>
+                            `;
+            },
+          },
+          { data: "questions.length" },
+          { data: "totalMarks", defaultContent: "N/A" },
+          { data: "correctAnswers", defaultContent: "N/A" },
+          {
+            data: "status",
+            render: function (data, type, row) {
+              let badgeClass =
+                data === "Running" ? "bg-success" : "bg-secondary";
+              return `<span class="badge ${badgeClass}">${
+                data || "Completed"
+              }</span>`;
+            },
+            defaultContent: "Completed",
+          },
+          {
+            data: null,
+            render: function (data, type, row) {
+              return `
+                                <button class="btn btn-sm btn-primary">Edit</button>
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            `;
+            },
+          },
+        ],
+        paging: true,
+        searching: true,
+        ordering: true,
+      });
+    });
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>

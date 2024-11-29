@@ -1,0 +1,51 @@
+<%- include('header.ejs') %>
+
+  <body>
+    <div class="container-scroller">
+    <%- include('instructor/instructorNavbar.ejs') %>
+        <div class="container-fluid page-body-wrapper">
+          <%- include('instructor/instructorSidebar.ejs') %>
+            <div class="main-panel">
+              <div class="content-wrapper">
+                <h2>Select a Course to view Lessons & Quizzes</h2>
+
+                <div class="row">
+                  <% if (courses && courses.length> 0) { %>
+                    <% courses.forEach(course=> { %>
+                      <div class="col-md-4 mb-4">
+                        <div class="card" style="width: 100%">
+                          <img src="http://127.0.0.1:7000/<%= course.thumbnail %>" alt="Course Thumbnail"
+                            class="card-img-top" />
+                          <div class="card-body">
+                            <h5 class="card-title">
+                              <%= course.title %>
+                            </h5>
+                            <p class="card-text">
+                              Description: <%= course.description.length> 70 ? course.description.slice(0, 70) + '...' :
+                                course.description %>
+                            </p>
+                            <p class="card-text">Category: <%= course.category %>
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center gap-3 ">
+                              <div class="">
+                                <a href="/instructor/course/<%= course._id  %>/lessons">
+                                  <button class="btn btn-primary btn-sm">View Lessons</button>
+                                </a>
+                              </div>
+                             
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <% }); %>
+                        <% } else { %>
+                          <p>No courses available.</p>
+                          <% } %>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+  </body>

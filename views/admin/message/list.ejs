@@ -1,0 +1,115 @@
+<%- include('header.ejs') %>
+
+<body>
+  <div class="container-scroller">
+    <%- include('admin/adminNavbar.ejs') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('admin/adminSidebar.ejs') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="container h-100 mx-auto">
+            <div class="row h-100 ">
+              <div
+                class="col-md-4 col-lg-3 bg-dark text-white d-flex flex-column p-4"
+              >
+                <h2>Chats</h2>
+                <div class="form-group mt-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Search"
+                  />
+                </div>
+                <div class="contact-list mt-3 overflow-auto" style="flex: 1">
+                  <div
+                    class="contact d-flex align-items-center py-2 border-bottom"
+                  >
+                    <img
+                      src="https://via.placeholder.com/50"
+                      class="rounded-circle mr-3"
+                      alt="User 1"
+                    />
+                    <div class="flex-grow-1">
+                      <h5 class="mb-0">Rex Allen</h5>
+                      <small class="text-muted">Hey, How are you?</small>
+                    </div>
+                    <small class="text-muted ml-auto">12 min</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chat Box -->
+              <div class="col-md-8 col-lg-6 p-0 d-flex flex-column">
+                <!-- Chat Header -->
+                <div
+                  class="chat-header p-3 d-flex align-items-center border-bottom"
+                >
+                  <img
+                    src="https://via.placeholder.com/50"
+                    class="rounded-circle mr-3"
+                    alt="User 2"
+                  />
+                  <div class="m-2">
+                    <h5 class="mb-0">Bradshaw</h5>
+                    <small class="text-muted">Stay at home, Stay safe</small>
+                  </div>
+                  <div class="ms-auto d-flex ">
+                    <button class="btn btn-light btn-sm mx-1">&#128222;</button>
+                    <button class="btn btn-light btn-sm mx-1">&#128247;</button>
+                  </div>
+                </div>
+
+                <!-- Chat Content -->
+                <div
+                  class="chat-content flex-grow-1 p-3 overflow-auto"
+                  id="chatMessages"
+                ></div>
+
+                <!-- Chat Input -->
+                <div class="chat-input border-top p-3 d-flex">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="messageInput"
+                    placeholder="Type something"
+                  />
+                  <button class="btn btn-primary ml-2" id="sendButton">
+                    &#10148;
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      const socket = io();
+      $('#sendButton').on('click', function () {
+        const message = $('#messageInput').val();
+        if (message) {
+          socket.emit('chatMessage', message); 
+          $('#messageInput').val('');
+        }
+      });
+      socket.on('chatMessage', function (message) {
+        $('#chatMessages').append(`<div class="message received mb-3"><div class="p-2 bg-light rounded w-75">${message}</div></div>`);
+        scrollToBottom();
+      });
+
+      function scrollToBottom() {
+        $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+      }
+    });
+  </script>
+
+  <%- include('footer.ejs') %>
+</body>

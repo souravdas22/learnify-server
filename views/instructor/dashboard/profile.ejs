@@ -1,0 +1,91 @@
+<%- include('header.ejs') %>
+
+<body>
+  <div class="container-scroller">
+    <%- include('instructor/instructorNavbar.ejs') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('instructor/instructorSidebar.ejs') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="container my-5">
+            <h2 class="mb-4">My Profile</h2>
+            <div class="card p-4">
+              <div class="row mb-3">
+                <div class="col-sm-3"><strong>Registration Date</strong></div>
+                <div class="col-sm-9 profile-registration-date">
+                  <%= new Date(user?.dateJoined).toLocaleDateString("en-US", {
+                  year: "numeric", month: "long", day: "numeric", }) %>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-sm-3"><strong>First Name</strong></div>
+                <div class="col-sm-9 profile-first-name"><%= user?.first_name %></div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-sm-3"><strong>Last Name</strong></div>
+                <div class="col-sm-9 profile-last-name"><%= user?.last_name %></div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-sm-3"><strong>Username</strong></div>
+                <div class="col-sm-9 profile-username"><%= user?.username %></div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-sm-3"><strong>Email</strong></div>
+                <div class="col-sm-9 profile-email"><%= user?.email %></div>
+              </div>
+
+              <!-- New Input Fields for Expertise and Bio -->
+              <form id="updateInstructorForm">
+                <div class="row mb-3">
+                  <div class="col-sm-3"><strong>Expertise</strong></div>
+                  <div class="col-sm-9">
+                    <input type="text" id="expertise" class="form-control" value="<%= user?.userDetails[0]?.expertise %>" required />
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-3"><strong>Bio</strong></div>
+                  <div class="col-sm-9">
+                    <textarea id="bio" class="form-control" rows="3" required><%= user?.userDetails[0]?.bio %></textarea>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary">Update Instructor Details</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+
+      $('#updateInstructorForm').submit(function (e) {
+        e.preventDefault(); 
+
+        const expertise = $('#expertise').val();
+        const bio = $('#bio').val();
+        const userId = '<%= id %>'; 
+
+        $.ajax({
+          url: `http://127.0.0.1:7000/api/instructor-details/update/${userId}`,
+          type: "POST",
+          data: { expertise, bio, userId },
+          success: function (response) {
+            alert(response.message); 
+          },
+          error: function (error) {
+            console.log("Error updating instructor details:", error);
+            alert("Error updating instructor details");
+          },
+        });
+      });
+    });
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>

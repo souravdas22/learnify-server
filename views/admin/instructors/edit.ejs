@@ -1,0 +1,127 @@
+<%- include('header.ejs') %>
+    <style>
+        .form-container {
+            max-width: 700px;
+            padding: 2rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 0.5rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .row-gap {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+
+<body>
+    <div class="container-scroller">
+    <%- include('admin/adminNavbar.ejs') %>
+        <div class="container-fluid page-body-wrapper">
+            <%- include('admin/adminSidebar.ejs') %>
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="container form-container">
+                        <h3 class="text-center mb-4">Edit Instructor</h3>
+                        <form id="editInstructorForm" enctype="multipart/form-data">
+
+                            <div class="row row-gap">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="first_name" class="form-label">First Name</label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name" value="<%= instructor.first_name %>" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="last_name" class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name" value="<%= instructor.last_name %>" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row row-gap">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="username" class="form-label">User Name</label>
+                                        <input type="text" class="form-control" id="username" name="username" value="<%= instructor.username %>" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" value="<%= instructor.email %>" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row row-gap">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="password" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="password" name="password" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="profilePicture" class="form-label">Profile Picture</label>
+                                        <input type="file" class="form-control" id="profilePicture" name="profilePicture" accept="image/*" />
+                                    </div>
+                                </div>
+                            </div>
+                         
+
+                            <button type="submit" class="btn-primary submit-btn mt-3">
+                                Update 
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Handle form submission
+            $("#editInstructorForm").on("submit", function (e) {
+                e.preventDefault();
+
+                var formData = new FormData(this);
+                $.ajax({
+                    url: `/api/user/edit/<%= instructor._id%>`,
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.status === 200) {
+                            alert("Student updated successfully!");
+                        } else {
+                            alert("Failed to update student: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error updating student:", error);
+                        alert("An error occurred while updating the student.");
+                    },
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
